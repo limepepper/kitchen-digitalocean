@@ -39,6 +39,8 @@ module Kitchen
       default_config :private_networking, true
       default_config :ipv6, false
       default_config :user_data, nil
+      default_config :tags, nil
+      default_config :firewalls, nil
 
       default_config :digitalocean_access_token do
         ENV['DIGITALOCEAN_ACCESS_TOKEN']
@@ -52,11 +54,15 @@ module Kitchen
       required_config :ssh_key_ids
 
       def create(state)
-        server = create_server
-
-        state[:server_id] = server.id
-
-        info("Digital Ocean instance <#{state[:server_id]}> created.")
+        debug("state is: #{state}")
+        if state[:last_action] == 'create' && state[:last_error].nil?  && 
+          state[:server_id]
+          info("Digital Ocean instance <#{state[:server_id]}> previously created.")
+        else
+          server = create_server
+          state[:server_id] = server.id
+          info("Digital Ocean instance <#{state[:server_id]}> created.")
+        end
 
         loop do
           sleep 8
@@ -70,11 +76,44 @@ module Kitchen
         state[:hostname] = droplet.networks[:v4]
                                   .find { |n| n[:type] == 'public' }['ip_address']
 
+        if config[:firewalls]
+          debug("trying to add the firewall by id")
+          fw_ids = config[:firewalls].is_a?(String) ? 
+                    config[:firewalls].split(/[, ]+/) : config[:firewalls]
+          fw_ids.each do |fw_id|
+            firewall = client.firewalls.find(id: fw_id)  
+            debug("firewall find is: #{fw_ids.inspect}")
+            firewall && client.firewalls
+                .add_droplets([droplet.id], id: firewall.id)
+          end
+         #  firewall = client.firewalls.find(id: 'id')
+           debug("firewall is #{fw_ids.inspect}")
+        end
+
+        # if config[:firewalls]
+        #   firewalls = client.firewalls.all()
+        #   (config[:firewalls].is_a?(String) ? 
+        #             config[:firewalls].split(/[, ]+/)
+        #              : config[:firewalls]).each do |fw_id|
+        #     info("firewall find is: #{fw_ids.inspect}")
+        #     firewall && client.firewalls
+        #         .add_droplets([droplet.id], id: firewall.id)
+        #   end
+        #  #  firewall = client.firewalls.find(id: 'id')
+        #    info("firewall is #{fw_ids.inspect}")
+        # client.firewalls.all()
+        # end
+
+
+        #client.firewalls.add_droplets([droplet.id], id: 'id')
+        #client.firewalls.find(id: 'id')
+
         wait_for_sshd(state[:hostname]); print "(ssh ready)\n"
         debug("digitalocean:create #{state[:hostname]}")
       end
 
       def destroy(state)
+        info("state is: #{state}")
         return if state[:server_id].nil?
 
         # A new droplet cannot be destroyed before it is active
@@ -142,7 +181,9 @@ module Kitchen
           ssh_keys: config[:ssh_key_ids].to_s.split(/, ?/),
           private_networking: config[:private_networking],
           ipv6: config[:ipv6],
-          user_data: config[:user_data]
+          user_data: config[:user_data],
+          tags: config[:tags].is_a?(String) ? 
+                    config[:tags].split(/[, ]+/) : config[:tags]
         )
 
         resp = client.droplets.create(droplet)
@@ -164,6 +205,8 @@ module Kitchen
         debug("digitalocean:private_networking #{config[:private_networking]}")
         debug("digitalocean:ipv6 #{config[:ipv6]}")
         debug("digitalocean:user_data #{config[:user_data]}")
+        debug("digitalocean:tags #{config[:tags]}")
+        debug("digitalocean:firewalls #{config[:firewalls]}")
       end
 
       def debug_client_config
@@ -180,15 +223,15 @@ module Kitchen
           'debian-7'     => 'debian-7-x64',
           'debian-8'     => 'debian-8-x64',
           'debian-9'     => 'debian-9-x64',
-          'fedora-24'      => 'fedora-24-x64',
           'fedora-25'      => 'fedora-25-x64',
           'fedora-26'      => 'fedora-26-x64',
+          'fedora-27'      => 'fedora-27-x64',
           'freebsd-11.1'   => 'freebsd-11-1-x64-zfs',
           'freebsd-11.0'   => 'freebsd-11-0-x64-zfs',
           'freebsd-10.3'   => 'freebsd-10-3-x64-zfs',
           'ubuntu-14'   => 'ubuntu-14-04-x64',
           'ubuntu-16'   => 'ubuntu-16-04-x64',
-          'ubuntu-17'   => 'ubuntu-17-04-x64'
+          'ubuntu-17'   => 'ubuntu-17-10-x64'
         }
       end
     end

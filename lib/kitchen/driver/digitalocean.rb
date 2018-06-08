@@ -55,9 +55,11 @@ module Kitchen
 
       def create(state)
         debug("state is: #{state}")
-        if state[:last_action] == 'create' && state[:last_error].nil?  && 
-          state[:server_id]
-          info("Digital Ocean instance <#{state[:server_id]}> previously created.")
+        if  state[:last_action] == 'create' && 
+            state[:last_error].nil? &&
+            state[:server_id]
+          info("Digital Ocean instance <#{state[:server_id]}> "\
+                    'previously created.')
         else
           server = create_server
           state[:server_id] = server.id
@@ -77,36 +79,20 @@ module Kitchen
                                   .find { |n| n[:type] == 'public' }['ip_address']
 
         if config[:firewalls]
-          debug("trying to add the firewall by id")
-          fw_ids = config[:firewalls].is_a?(String) ? 
-                    config[:firewalls].split(/[, ]+/) : config[:firewalls]
+          debug('trying to add the firewall by id')
+          fw_ids = if config[:firewalls].is_a?(String)
+                     config[:firewalls].split(/[, ]+/)
+                   else
+                     config[:firewalls]
+                   end
           fw_ids.each do |fw_id|
-            firewall = client.firewalls.find(id: fw_id)  
+            firewall = client.firewalls.find(id: fw_id)
             debug("firewall find is: #{fw_ids.inspect}")
-            firewall && client.firewalls
-                .add_droplets([droplet.id], id: firewall.id)
+            firewall &&
+                client.firewalls
+                      .add_droplets([droplet.id], id: firewall.id)
           end
-         #  firewall = client.firewalls.find(id: 'id')
-           debug("firewall is #{fw_ids.inspect}")
         end
-
-        # if config[:firewalls]
-        #   firewalls = client.firewalls.all()
-        #   (config[:firewalls].is_a?(String) ? 
-        #             config[:firewalls].split(/[, ]+/)
-        #              : config[:firewalls]).each do |fw_id|
-        #     info("firewall find is: #{fw_ids.inspect}")
-        #     firewall && client.firewalls
-        #         .add_droplets([droplet.id], id: firewall.id)
-        #   end
-        #  #  firewall = client.firewalls.find(id: 'id')
-        #    info("firewall is #{fw_ids.inspect}")
-        # client.firewalls.all()
-        # end
-
-
-        #client.firewalls.add_droplets([droplet.id], id: 'id')
-        #client.firewalls.find(id: 'id')
 
         wait_for_sshd(state[:hostname]); print "(ssh ready)\n"
         debug("digitalocean:create #{state[:hostname]}")
@@ -182,8 +168,11 @@ module Kitchen
           private_networking: config[:private_networking],
           ipv6: config[:ipv6],
           user_data: config[:user_data],
-          tags: config[:tags].is_a?(String) ? 
-                    config[:tags].split(/[, ]+/) : config[:tags]
+          tags: if config[:tags].is_a?(String)
+                  config[:tags].split(/[, ]+/)
+                else
+                  config[:tags]
+                end
         )
 
         resp = client.droplets.create(droplet)

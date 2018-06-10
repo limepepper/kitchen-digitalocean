@@ -39,6 +39,8 @@ module Kitchen
       default_config :private_networking, true
       default_config :ipv6, false
       default_config :user_data, nil
+      default_config :tags, nil
+      default_config :firewalls, nil
 
       default_config :digitalocean_access_token do
         ENV['DIGITALOCEAN_ACCESS_TOKEN']
@@ -70,11 +72,28 @@ module Kitchen
         state[:hostname] = droplet.networks[:v4]
                                   .find { |n| n[:type] == 'public' }['ip_address']
 
+        if config[:firewalls]
+          debug('trying to add the firewall by id')
+          fw_ids = if config[:firewalls].is_a?(String)
+                     config[:firewalls].split(/[, ]+/)
+                   else
+                     config[:firewalls]
+                   end
+          fw_ids.each do |fw_id|
+            firewall = client.firewalls.find(id: fw_id)
+            debug("firewall find is: #{fw_ids.inspect}")
+            firewall &&
+                client.firewalls
+                      .add_droplets([droplet.id], id: firewall.id)
+          end
+        end
+
         wait_for_sshd(state[:hostname]); print "(ssh ready)\n"
         debug("digitalocean:create #{state[:hostname]}")
       end
 
       def destroy(state)
+        info("state is: #{state}")
         return if state[:server_id].nil?
 
         # A new droplet cannot be destroyed before it is active
@@ -142,7 +161,12 @@ module Kitchen
           ssh_keys: config[:ssh_key_ids].to_s.split(/, ?/),
           private_networking: config[:private_networking],
           ipv6: config[:ipv6],
-          user_data: config[:user_data]
+          user_data: config[:user_data],
+          tags: if config[:tags].is_a?(String)
+                  config[:tags].split(/[, ]+/)
+                else
+                  config[:tags]
+                end
         )
 
         resp = client.droplets.create(droplet)
@@ -164,6 +188,8 @@ module Kitchen
         debug("digitalocean:private_networking #{config[:private_networking]}")
         debug("digitalocean:ipv6 #{config[:ipv6]}")
         debug("digitalocean:user_data #{config[:user_data]}")
+        debug("digitalocean:tags #{config[:tags]}")
+        debug("digitalocean:firewalls #{config[:firewalls]}")
       end
 
       def debug_client_config

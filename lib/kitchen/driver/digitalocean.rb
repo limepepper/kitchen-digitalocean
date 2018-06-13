@@ -39,6 +39,7 @@ module Kitchen
       default_config :private_networking, true
       default_config :ipv6, false
       default_config :user_data, nil
+      default_config :tags, nil
       default_config :firewalls, nil
       default_config :tags, nil
 

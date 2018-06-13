@@ -40,6 +40,7 @@ module Kitchen
       default_config :ipv6, false
       default_config :user_data, nil
       default_config :firewalls, nil
+      default_config :tags, nil
 
       default_config :digitalocean_access_token do
         ENV['DIGITALOCEAN_ACCESS_TOKEN']
@@ -175,7 +176,7 @@ module Kitchen
           ipv6: config[:ipv6],
           user_data: config[:user_data],
           tags: if config[:tags].is_a?(String)
-                  config[:tags].split(/[, ]+/)
+                  config[:tags].split(/\s+|,\s+|,+/)
                 else
                   config[:tags]
                 end

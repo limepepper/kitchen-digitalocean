@@ -170,6 +170,16 @@ ocean API:
 curl -X GET https://api.digitalocean.com/v2/firewalls -H "Authorization: Bearer $DIGITALOCEAN_ACCESS_TOKEN"
 ```
 
+# Tags
+
+To add tags to the droplet, provide the tags attribute
+
+```ruby
+driver:
+  tags:
+    - test-kitchen
+    - this-is-a-tag
+```
 
 # Development
 

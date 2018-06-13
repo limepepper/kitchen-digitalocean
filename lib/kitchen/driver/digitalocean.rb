@@ -39,7 +39,6 @@ module Kitchen
       default_config :private_networking, true
       default_config :ipv6, false
       default_config :user_data, nil
-      default_config :tags, nil
       default_config :firewalls, nil
 
       default_config :digitalocean_access_token do
@@ -81,16 +80,23 @@ module Kitchen
         if config[:firewalls]
           debug('trying to add the firewall by id')
           fw_ids = if config[:firewalls].is_a?(String)
-                     config[:firewalls].split(/[, ]+/)
-                   else
+                     config[:firewalls].split(/\s+|,\s+|,+/)
+                   elsif config[:firewalls].is_a?(Array)
                      config[:firewalls]
+                   else
+                     warn('firewalls attribute is not string/array, ignoring')
+                     []
                    end
+          debug("firewall : #{fw_ids.inspect.to_yaml}")
           fw_ids.each do |fw_id|
             firewall = client.firewalls.find(id: fw_id)
-            debug("firewall find is: #{fw_ids.inspect}")
-            firewall &&
-                client.firewalls
-                      .add_droplets([droplet.id], id: firewall.id)
+            if firewall
+              client.firewalls
+                    .add_droplets([droplet.id], id: firewall.id)
+              debug("firewall added: #{firewall.id}")
+            else
+              warn("firewalls id: '#{fw_id}' was not found in api, ignoring")
+            end
           end
         end
 

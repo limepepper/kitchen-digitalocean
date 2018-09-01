@@ -1,5 +1,3 @@
-# -*- encoding: utf-8 -*-
-
 #
 # Author:: Greg Fitzgerald (<greg@gregf.org>)
 #
@@ -39,6 +37,7 @@ module Kitchen
       default_config :private_networking, true
       default_config :ipv6, false
       default_config :user_data, nil
+      default_config :tags, nil
       default_config :firewalls, nil
       default_config :tags, nil
 
@@ -71,7 +70,7 @@ module Kitchen
           droplet = client.droplets.find(id: state[:server_id])
 
           break if droplet && droplet.networks[:v4] &&
-            droplet.networks[:v4].any? { |n| n[:type] == 'public' }
+                   droplet.networks[:v4].any? { |n| n[:type] == 'public' }
         end
         droplet ||= client.droplets.find(id: state[:server_id])
 
@@ -120,12 +119,12 @@ module Kitchen
             break
           end
 
-          info("Waiting on Digital Ocean instance <#{state[:server_id]}>
+          info("Waiting on DigitalOcean instance <#{state[:server_id]}>
                to be active to destroy it, retrying in 8 seconds")
           sleep 8
         end
 
-        info("Digital Ocean instance <#{state[:server_id]}> destroyed.")
+        info("DigitalOcean instance <#{state[:server_id]}> destroyed.")
         state.delete(:server_id)
         state.delete(:hostname)
       end
@@ -221,9 +220,11 @@ module Kitchen
           'debian-9'     => 'debian-9-x64',
           'fedora-27'      => 'fedora-27-x64',
           'fedora-28'      => 'fedora-28-x64',
+          'freebsd-11.2'   => 'freebsd-11-2-x64-zfs',
           'freebsd-11.1'   => 'freebsd-11-1-x64-zfs',
           'freebsd-11.0'   => 'freebsd-11-0-x64-zfs',
           'freebsd-10.3'   => 'freebsd-10-3-x64-zfs',
+          'freebsd-10.4'   => 'freebsd-10-4-x64-zfs',
           'ubuntu-14'   => 'ubuntu-14-04-x64',
           'ubuntu-16'   => 'ubuntu-16-04-x64',
           'ubuntu-17'   => 'ubuntu-17-10-x64',

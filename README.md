@@ -1,12 +1,11 @@
 [![Gem Version](https://badge.fury.io/rb/kitchen-digitalocean.svg)](http://badge.fury.io/rb/kitchen-digitalocean)
-[![Build Status](https://travis-ci.org/test-kitchen/kitchen-digitalocean.png?branch=master)](https://travis-ci.org/test-kitchen/kitchen-digitalocean)
-[![Code Climate](https://codeclimate.com/github/test-kitchen/kitchen-digitalocean.png)](https://codeclimate.com/github/test-kitchen/kitchen-digitalocean)
+[![Build Status](https://travis-ci.org/test-kitchen/kitchen-digitalocean.svg?branch=master)](https://travis-ci.org/test-kitchen/kitchen-digitalocean)
+[![Code Climate](https://codeclimate.com/github/test-kitchen/kitchen-digitalocean.svg)](https://codeclimate.com/github/test-kitchen/kitchen-digitalocean)
 [![Coverage Status](https://coveralls.io/repos/test-kitchen/kitchen-digitalocean/badge.svg?branch=master)](https://coveralls.io/r/test-kitchen/kitchen-digitalocean?branch=master)
-[![Dependency Status](https://gemnasium.com/test-kitchen/kitchen-digitalocean.svg)](https://gemnasium.com/test-kitchen/kitchen-digitalocean)
 
 # Kitchen::Digitalocean
 
-A Test Kitchen Driver for Digital Ocean
+A Test Kitchen Driver for DigitalOcean
 
 Shamelessly copied from [RoboticCheese](https://github.com/RoboticCheese)'s
 awesome work on an [Rackspace driver](https://github.com/RoboticCheese/kitchen-rackspace).
@@ -26,7 +25,7 @@ There are no external system requirements for this driver. However you will need
 
 You'll need to install the gem on your development machine.
 
-```Bash
+```bash
 gem install kitchen-digitalocean
 ```
 
@@ -98,7 +97,6 @@ driver:
 
 IPv6 is disabled by default, you can enable this if needed. IPv6 is only available in limited regions.
 
-
 ```ruby
 ---
 driver:
@@ -143,6 +141,17 @@ fra1    Frankfurt 1
 tor1    Toronto 1
 sfo2    San Francisco 2
 blr1    Bangalore 1
+```
+
+# Tags
+
+To add tags to the droplet, provide the tags attribute
+
+```ruby
+driver:
+  tags:
+    - test-kitchen
+    - this-is-a-tag
 ```
 
 # Firewall

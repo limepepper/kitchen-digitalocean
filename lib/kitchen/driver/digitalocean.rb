@@ -55,9 +55,10 @@ module Kitchen
         debug("state is: #{state}")
         if  state[:last_action] == 'create' &&
             state[:last_error].nil? &&
-            state[:server_id]
+            state[:server_id] &&
+            client.droplets.find(id: state[:server_id])
           info("Digital Ocean instance <#{state[:server_id]}> "\
-                    'previously created.')
+                    "previously created. #{client.droplets.find(id: state[:server_id])}")
         else
           server = create_server
           state[:server_id] = server.id
@@ -65,11 +66,11 @@ module Kitchen
         end
 
         loop do
-          sleep 8
           droplet = client.droplets.find(id: state[:server_id])
 
           break if droplet && droplet.networks[:v4] &&
                    droplet.networks[:v4].any? { |n| n[:type] == 'public' }
+          sleep 8
         end
         droplet ||= client.droplets.find(id: state[:server_id])
 

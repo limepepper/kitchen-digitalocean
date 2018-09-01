@@ -52,11 +52,17 @@ module Kitchen
       required_config :ssh_key_ids
 
       def create(state)
-        server = create_server
-
-        state[:server_id] = server.id
-
-        info("DigitalOcean instance <#{state[:server_id]}> created.")
+        debug("state is: #{state}")
+        if  state[:last_action] == 'create' &&
+            state[:last_error].nil? &&
+            state[:server_id]
+          info("Digital Ocean instance <#{state[:server_id]}> "\
+                    'previously created.')
+        else
+          server = create_server
+          state[:server_id] = server.id
+          info("Digital Ocean instance <#{state[:server_id]}> created.")
+        end
 
         loop do
           sleep 8
@@ -98,6 +104,7 @@ module Kitchen
       end
 
       def destroy(state)
+        info("state is: #{state}")
         return if state[:server_id].nil?
 
         # A new droplet cannot be destroyed before it is active

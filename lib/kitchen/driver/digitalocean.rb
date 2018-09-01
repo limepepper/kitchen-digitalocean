@@ -40,6 +40,7 @@ module Kitchen
       default_config :tags, nil
       default_config :firewalls, nil
       default_config :tags, nil
+      default_config :firewalls, nil
 
       default_config :digitalocean_access_token do
         ENV['DIGITALOCEAN_ACCESS_TOKEN']

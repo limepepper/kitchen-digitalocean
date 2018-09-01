@@ -143,6 +143,7 @@ sfo2    San Francisco 2
 blr1    Bangalore 1
 ```
 
+
 # Tags
 
 To add tags to the droplet, provide the tags attribute
@@ -153,6 +154,7 @@ driver:
     - test-kitchen
     - this-is-a-tag
 ```
+
 
 # Firewall
 
@@ -179,16 +181,6 @@ ocean API:
 curl -X GET https://api.digitalocean.com/v2/firewalls -H "Authorization: Bearer $DIGITALOCEAN_ACCESS_TOKEN"
 ```
 
-# Tags
-
-To add tags to the droplet, provide the tags attribute
-
-```ruby
-driver:
-  tags:
-    - test-kitchen
-    - this-is-a-tag
-```
 
 # Development
 

@@ -32,6 +32,7 @@ module Kitchen
       default_config :port, '22'
       default_config :region, 'nyc1'
       default_config :size, '512mb'
+      default_config :monitoring, false
       default_config(:image, &:default_image)
       default_config(:server_name, &:default_name)
       default_config :private_networking, true
@@ -106,6 +107,7 @@ module Kitchen
           droplet = client.droplets.find(id: state[:server_id])
 
           break unless droplet
+
           if droplet.status != 'new'
             client.droplets.delete(id: state[:server_id])
             break
@@ -162,6 +164,7 @@ module Kitchen
           region: config[:region],
           image: config[:image],
           size: config[:size],
+          monitoring: config[:monitoring],
           ssh_keys: config[:ssh_key_ids].to_s.split(/, ?/),
           private_networking: config[:private_networking],
           ipv6: config[:ipv6],
@@ -187,9 +190,11 @@ module Kitchen
         debug("digitalocean:name #{config[:server_name]}")
         debug("digitalocean:image#{config[:image]}")
         debug("digitalocean:size #{config[:size]}")
+        debug("digitalocean:monitoring #{config[:monitoring]}")
         debug("digitalocean:region #{config[:region]}")
         debug("digitalocean:ssh_key_ids #{config[:ssh_key_ids]}")
         debug("digitalocean:private_networking #{config[:private_networking]}")
+        debug("digitalocean:ipv4 #{config[:ipv4]})")
         debug("digitalocean:ipv6 #{config[:ipv6]}")
         debug("digitalocean:user_data #{config[:user_data]}")
         debug("digitalocean:tags #{config[:tags]}")
@@ -202,25 +207,25 @@ module Kitchen
 
       def platform_to_slug_mapping
         {
-          'centos-6'     => 'centos-6-x64',
-          'centos-7'     => 'centos-7-x64',
+          'centos-6' => 'centos-6-x64',
+          'centos-7' => 'centos-7-x64',
           'coreos-stable' => 'coreos-stable-x64',
           'coreos-beta' => 'coreos-beta-x64',
           'coreos-alpha' => 'coreos-alpha-x64',
-          'debian-7'     => 'debian-7-x64',
-          'debian-8'     => 'debian-8-x64',
-          'debian-9'     => 'debian-9-x64',
-          'fedora-27'      => 'fedora-27-x64',
-          'fedora-28'      => 'fedora-28-x64',
-          'freebsd-11.2'   => 'freebsd-11-2-x64-zfs',
-          'freebsd-11.1'   => 'freebsd-11-1-x64-zfs',
-          'freebsd-11.0'   => 'freebsd-11-0-x64-zfs',
-          'freebsd-10.3'   => 'freebsd-10-3-x64-zfs',
-          'freebsd-10.4'   => 'freebsd-10-4-x64-zfs',
-          'ubuntu-14'   => 'ubuntu-14-04-x64',
-          'ubuntu-16'   => 'ubuntu-16-04-x64',
-          'ubuntu-17'   => 'ubuntu-17-10-x64',
-          'ubuntu-18'   => 'ubuntu-18-04-x64'
+          'debian-7' => 'debian-7-x64',
+          'debian-8' => 'debian-8-x64',
+          'debian-9' => 'debian-9-x64',
+          'fedora-27' => 'fedora-27-x64',
+          'fedora-28' => 'fedora-28-x64',
+          'freebsd-11.2' => 'freebsd-11-2-x64-zfs',
+          'freebsd-11.1' => 'freebsd-11-1-x64-zfs',
+          'freebsd-11.0' => 'freebsd-11-0-x64-zfs',
+          'freebsd-10.3' => 'freebsd-10-3-x64-zfs',
+          'freebsd-10.4' => 'freebsd-10-4-x64-zfs',
+          'ubuntu-14' => 'ubuntu-14-04-x64',
+          'ubuntu-16' => 'ubuntu-16-04-x64',
+          'ubuntu-17' => 'ubuntu-17-10-x64',
+          'ubuntu-18' => 'ubuntu-18-04-x64'
         }
       end
     end

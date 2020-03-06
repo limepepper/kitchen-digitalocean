@@ -1,5 +1,14 @@
-# UNRELEASED
+# 0.10.3 / 2019-03-20
+- Loosen dependencies
 
+# 0.10.2 / 2019-02-15
+- Update gem versions
+- Expose ipv4 address in debug information
+- Fix rubocop warnings
+
+# 0.10.1 / 2018-10-05
+
+- [@tas50] [PR #64] Slim the size of the Gem and standardize the license file / string
 - Add new FreeBSD 10.4/11.2 slugs
 - Make DigitalOcean a single word in logging
 

@@ -1,3 +1,7 @@
+<img src="/assets/do_logo.png" alt="DO Logo">
+
+Now proudly sponsored by [DigitalOcean](https://www.digitalocean.com). 
+
 [![Gem Version](https://badge.fury.io/rb/kitchen-digitalocean.svg)](http://badge.fury.io/rb/kitchen-digitalocean)
 [![Build Status](https://travis-ci.org/test-kitchen/kitchen-digitalocean.svg?branch=master)](https://travis-ci.org/test-kitchen/kitchen-digitalocean)
 [![Code Climate](https://codeclimate.com/github/test-kitchen/kitchen-digitalocean.svg)](https://codeclimate.com/github/test-kitchen/kitchen-digitalocean)
@@ -5,7 +9,7 @@
 
 # Kitchen::Digitalocean
 
-A Test Kitchen Driver for DigitalOcean
+A Test Kitchen Driver for [DigitalOcean](https://www.digitalocean.com). 
 
 Shamelessly copied from [RoboticCheese](https://github.com/RoboticCheese)'s
 awesome work on an [Rackspace driver](https://github.com/RoboticCheese/kitchen-rackspace).
@@ -116,11 +120,13 @@ coreos-alpha
 debian-7
 debian-8
 debian-9
+debian-10
 fedora-27
 fedora-28
-reebsd-11.1
+freebsd-11.1
 freebsd-11.0
 freebsd-10.3
+freebsd-12
 ubuntu-14
 ubuntu-16
 ubuntu-17
@@ -142,6 +148,50 @@ tor1    Toronto 1
 sfo2    San Francisco 2
 blr1    Bangalore 1
 ```
+
+By default your droplets will be built in `nyc1` but you can change the default by updating the
+environment variable.  This should allow teams with developers across different regions to test within
+their own geographic region without hard coding configs.
+
+```bash
+export DIGITALOCEAN_REGION="tor1"
+```
+
+This allows futher customization by allowing overrides at the `driver` level and the `platform`
+level.
+
+```ruby
+# DIGITALOCEAN_REGION="tor1" # set as an env var
+
+# cookbook1/.kitchen.yml
+---
+driver:
+  name: digitalocean
+  region: sgp1
+platforms:
+  - name: ubuntu-16
+  - name: ubuntu-18
+    region: sfo1
+
+# cookbook2/.kitchen.yml
+---
+driver:
+  name: digitalocean
+platforms:
+  - name: ubuntu-16
+  - name: ubuntu-18
+    region: sfo1
+```
+
+The above configuration when full tested would create the following images in their respective
+regions.
+
+|Image|Region|
+|---|---|
+|cookbook1-ubuntu-16|sgp1|
+|cookbook1-ubuntu-18|sfo1|
+|cookbook2-ubuntu-16|tor1|
+|cookbook2-ubuntu-18|sfo1|
 
 # Tags
 
@@ -217,3 +267,4 @@ Created and maintained by [Greg Fitzgerald](https://github.com/gregf/) (<greg@gr
 # License
 
 Apache 2.0 (see [LICENSE](https://github.com/test-kitchen/kitchen-digitalocean/blob/master/LICENSE.txt))
+

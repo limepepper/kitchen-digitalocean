@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 #
 # Author:: Greg Fitzgerald (<greg@gregf.org>)
 #
@@ -30,7 +32,6 @@ module Kitchen
     class Digitalocean < Kitchen::Driver::SSHBase
       default_config :username, 'root'
       default_config :port, '22'
-      default_config :region, 'nyc1'
       default_config :size, '512mb'
       default_config :monitoring, false
       default_config(:image, &:default_image)
@@ -40,6 +41,10 @@ module Kitchen
       default_config :user_data, nil
       default_config :tags, nil
       default_config :firewalls, nil
+
+      default_config :region do
+        ENV['DIGITALOCEAN_REGION'] || 'nyc1'
+      end
 
       default_config :digitalocean_access_token do
         ENV['DIGITALOCEAN_ACCESS_TOKEN']
@@ -215,8 +220,12 @@ module Kitchen
           'debian-7' => 'debian-7-x64',
           'debian-8' => 'debian-8-x64',
           'debian-9' => 'debian-9-x64',
+          'debian-10' => 'debian-10-x64',
           'fedora-27' => 'fedora-27-x64',
           'fedora-28' => 'fedora-28-x64',
+          'fedora-29' => 'fedora-29-x64',
+          'fedora-30' => 'fedora-30-x64',
+          'freebsd-12' => 'freebsd-12-x64-zfs',
           'freebsd-11.2' => 'freebsd-11-2-x64-zfs',
           'freebsd-11.1' => 'freebsd-11-1-x64-zfs',
           'freebsd-11.0' => 'freebsd-11-0-x64-zfs',
@@ -225,7 +234,8 @@ module Kitchen
           'ubuntu-14' => 'ubuntu-14-04-x64',
           'ubuntu-16' => 'ubuntu-16-04-x64',
           'ubuntu-17' => 'ubuntu-17-10-x64',
-          'ubuntu-18' => 'ubuntu-18-04-x64'
+          'ubuntu-18' => 'ubuntu-18-04-x64',
+          'ubuntu-19' => 'ubuntu-19-04-x64'
         }
       end
     end

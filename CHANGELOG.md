@@ -1,3 +1,11 @@
+# 0.10.5 / 2019-10-22
+- Add Debian-10 and FreeBSD-12 image aliases
+
+# 0.10.4 / 2019-06-28
+- [@bdausses] [PR #67] Added ability to apply monitoring at droplet creation.
+- [@tolland] [PR #69] adding new slugs
+- [@esoterick] [PR #70] feature: default region environment variable
+
 # 0.10.3 / 2019-03-20
 - Loosen dependencies
 

@@ -15,7 +15,7 @@ Gem::Specification.new do |spec|
   spec.files         = `git ls-files`.split($INPUT_RECORD_SEPARATOR).grep(/LICENSE|^lib/)
   spec.require_paths = ['lib']
 
-  spec.add_dependency 'droplet_kit', '~> 2.8'
+  spec.add_dependency 'droplet_kit', '>= 2.8', '< 4.0'
   spec.add_dependency 'test-kitchen', '>= 1.17', '< 3'
 
   spec.add_development_dependency 'bundler'
@@ -24,7 +24,7 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency 'coveralls', '~> 0.8'
   spec.add_development_dependency 'rake'
   spec.add_development_dependency 'rspec', '~> 3.8'
-  spec.add_development_dependency 'rubocop', '~> 0.64'
+  spec.add_development_dependency 'rubocop', '~> 0.74'
   spec.add_development_dependency 'simplecov', '~> 0.9'
   spec.add_development_dependency 'simplecov-console', '~> 0.2'
   spec.add_development_dependency 'webmock', '~> 3.5'
